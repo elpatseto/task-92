@@ -31,8 +31,20 @@ export default class Application extends EventEmitter {
       const card = new Card({ ...pizza });
       card.render();
 
+      card.container.addEventListener('click', () => {
+        let {_type, _price} = card;
+        let notification = new Notification(_type);
+        notification.render(_type, _price);
+        setTimeout(function (){
+          notification.clearContent();
+        },3000)
+
+
+      });
+
       document.querySelector(".main").appendChild(card.container);
     });
+
 
     this.emit(Application.events.READY);
   }

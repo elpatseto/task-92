@@ -1,8 +1,9 @@
 import {formatCurrency} from "./utils";
 import classNames from "classnames";
+import Card from "./Card";
 
 
-export default class Notification {
+export default class Notification{
   static get types() {
     return {
       PEPPERONI: "pepperoni",
@@ -13,31 +14,28 @@ export default class Notification {
 
   constructor() {
     this.container = document.createElement("div");
-    this.container.classList.add("notification-container");
+    this.container.classList.add('notification-container');
+    this.notificationDiv = document.querySelector('.notifications')
+
   }
 
-  render(type, price) {
+  render ({ type, price, emoji}){
     const template = `
-      <div class="notification type-pepperoni ${ type === 'hawaiian' ? classNames('is-danger') : ''}">
-        <button class="delete" onclick="close()"></button>
-        🍕 <span class="type" >${type}</span> (<span class="price">${formatCurrency(price)}</span>) has been added to your order.
-      </div>
-    `;
-
+                <div class='notification type-${type} ${classNames({ "is-danger": type === Card.types.HAWAIIAN })}'>
+                <button class='delete'></button>
+                ${emoji}<span class="type">${type}</span> (<span class='price'> ${formatCurrency(price)}</span>) has been added to your order!
+                </div>`;
     this.container.innerHTML = template;
-    document.getElementsByClassName('notifications')[0].appendChild(this.container);
 
-    let closeBtns= document.getElementsByClassName('delete');
-    for(const btn of closeBtns) {
-      btn.addEventListener('click',()=>{
-        btn.parentElement.remove();
-      })
-    }
+    this.notificationDiv.appendChild(this.container);
 
-  }
+    let button = this.container.querySelector('.delete')
+    button.addEventListener('click', () => this.onDelete())
+  };
 
-  clearContent() {
-    this.container.textContent = "";
+
+  onDelete() {
+    this.notificationDiv.removeChild(this.container)
   }
 
 
